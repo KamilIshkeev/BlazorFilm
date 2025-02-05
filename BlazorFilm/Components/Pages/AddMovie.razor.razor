@@ -1,0 +1,43 @@
+﻿@page "/add-movie"
+@inject IMovieService MovieService
+@inject NavigationManager NavigationManager
+
+<h3>Добавить новый фильм</h3>
+
+<EditForm Model="@newMovie" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Название:</label>
+        <InputText @bind-Value="newMovie.Title" />
+    </div>
+    <div>
+        <label>Описание:</label>
+        <InputTextArea @bind-Value="newMovie.Description" />
+    </div>
+    <div>
+        <label>Жанр:</label>
+        <InputText @bind-Value="newMovie.Genre" />
+    </div>
+    <div>
+        <label>Дата выхода:</label>
+        <InputDate @bind-Value="newMovie.ReleaseDate" />
+    </div>
+    <div>
+        <label>Рейтинг:</label>
+        <InputNumber @bind-Value="newMovie.Rating" />
+    </div>
+
+    <button type="submit">Добавить</button>
+</EditForm>
+
+@code {
+    private Movie newMovie = new Movie();
+
+    private async Task HandleValidSubmit()
+    {
+        await MovieService.AddMovie(newMovie);
+        NavigationManager.NavigateTo("/");
+    }
+}

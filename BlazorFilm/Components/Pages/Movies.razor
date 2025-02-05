@@ -1,0 +1,42 @@
+﻿@page "/movie/{id:int}"
+@using BlazorFilm.Components.Services
+@using BlazorFilm.Models
+@inject IMovieService MovieService
+@inject NavigationManager NavigationManager
+
+
+
+<h3>@movie.Title</h3>
+
+<p>@movie.Description</p>
+<p><strong>Жанр:</strong> @movie.Genre</p>
+<p><strong>Дата выхода:</strong> @movie.ReleaseDate.ToShortDateString()</p>
+<p><strong>Рейтинг:</strong> @movie.Rating</p>
+
+<button @onclick="EditMovie">Редактировать</button>
+<button @onclick="DeleteMovie">Удалить</button>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Movie movie;
+    private IMovieService movieService;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        movieService = MovieService;
+        movie = await movieService.GetMovieById(Id);
+    }
+
+    private void EditMovie()
+    {
+        NavigationManager.NavigateTo($"/edit-movie/{Id}");
+    }
+
+    private async Task DeleteMovie()
+    {
+        await MovieService.DeleteMovie(Id);
+        NavigationManager.NavigateTo("/");
+    }
+}

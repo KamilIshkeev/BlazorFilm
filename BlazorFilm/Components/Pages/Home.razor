@@ -1,0 +1,48 @@
+﻿@page "/"
+@inject IMovieService MovieService
+@using BlazorFilm.Models
+@inject NavigationManager NavigationManager
+
+<h3>Список фильмов</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Жанр</th>
+            <th>Дата выхода</th>
+            <th>Рейтинг</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in movies)
+        {
+            <tr>
+                <td>@movie.Title</td>
+                <td>@movie.Description</td>
+                <td>@movie.Genre</td>
+                <td>@movie.ReleaseDate.ToShortDateString()</td>
+                <td>@movie.Rating</td>
+                <td>
+                    <a href="/movie/@movie.Id">Подробнее</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-success" @onclick="NavigateToAddMovie">Добавить фильм</button>
+
+@code {
+    private IEnumerable<Movie> movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetAllMovies();
+    }
+
+    private void NavigateToAddMovie()
+    {
+        NavigationManager.NavigateTo("/add-movie");
+    }
+}
